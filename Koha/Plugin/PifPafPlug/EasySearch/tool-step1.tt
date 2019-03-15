@@ -1,0 +1,89 @@
+[% INCLUDE 'doc-head-open.inc' %]
+ <title>Koha: EasySearch Plugin: Example Tool</title>
+
+[% INCLUDE 'doc-head-close.inc' %]
+<style type="text/css">
+fieldset.rows [type=text].addurl {
+    width:60%;
+}
+fieldset.rows {
+    float:none;
+    padding-top:1%;
+    padding-bottom:2%;
+}
+#doc3 p {
+     border-left: 5px solid #ccc;
+     margin-left:3%;
+     padding-left:1%;
+}
+fieldset.rows label {
+    width:20em;
+}
+fieldset.rows [type=text]{
+    width:20em;
+}
+[for=reflabel] span {
+    font-style:italic;
+}
+
+</style>
+<script type="text/JavaScript" language="JavaScript">
+$(document).ready(function(){
+$('a.addplugin ').click(function(){
+    if (! okconf()) return false;
+    var url = "/plugin/Koha/Plugin/PifPafPlug/EasySearch/searchplugins/" + $(this).attr('id');
+    window.external.AddSearchProvider(url);
+    return false;
+});
+$('.addurl').click(function () {
+    $(this).select();
+});
+});
+ </script>;
+  
+</head>
+<body>
+[% INCLUDE 'header.inc' %]
+[% INCLUDE 'cat-search.inc' %]
+
+<div id="breadcrumbs"><a href="/cgi-bin/koha/mainpage.pl">Home</a> &rsaquo; <a href="/cgi-bin/koha/plugins/plugins-home.pl">Plugins</a> &rsaquo; EasySearch &rsaquo; Installation</div>
+
+[% UNLESS ( okconfig ) %]
+    <div class="dialog alert"><h4>Attention !</h4>Il semble que la configuration des plugins ne soit pas finalisée<br /> Vous ne pourrez pas les installer dans Firefox<br />&nbsp;&nbsp;Veuillez contacter l'administrateur</div>
+[% END %]
+<div id="doc3">
+    <h3>Installation des plugins de recherche  dans Firefox</h3>
+    <p>Attention, pour réinstaller un plugin déja présent dans Firefox, il faut d'abord le supprimer :<br />
+    dans la barre de recherche, cliquez sur la petite loupe puis sur <i>Paramètres de recherche</i>.</p>
+        <!-- Notice our form here has no 'action', this is good, it means that our forms will always get passed back to 'plugins/run.pl'. You could hard code it instead if you prefer -->
+<fieldset class="rows install"><legend>Installation automatique</legend>
+<div class="ui-tabs-panel"  >
+        <ol>
+	    [% FOREACH pl IN pluginloop %]
+            <li>
+                <label for="reflabel" ><span>[% pl.reflabel %]</span>&nbsp;:&nbsp;</label>
+                <a class="addplugin" href="#" id="[% pl.reftype %].xml" >Ajouter à la barre de recherche</a>
+            </li>
+	    [% END %]
+        </ol>
+</div>
+</fieldset>
+<h3>Installation dans Chrome</h3>
+<fieldset class="rows install"><legend>Copie de l'url type</legend>
+<div class="ui-tabs-panel"  >
+  <p>Dans Chrome, il n'y pas de barre de recherche dédiée, mais on peut configurer un nouveau moteur
+  en cliquant droit dans la barre de navigation puis <i>Editer les moteurs de recherche</i><br />
+  Dans la section <i>Autres moteurs</i>, choisissez un nom et une lettre (ou un mot) clé puis copiez une des urls ci-dessous prêtes à l'emploi.<br />
+  Vous pourrez ensuite cibler le moteur de votre choix en faisant précéder vos termes de recherche de la lettre clé.
+  </p>  
+        <ol>
+	    [% FOREACH pl IN pluginloop %]
+            <li>
+                <label for="reflabel" ><span>[% pl.reflabel %]</span>&nbsp;:&nbsp;</label>
+                <input class="addurl" type="text" readonly="readonly" value="[% pl.url %]"/>
+            </li>
+	    [% END %]
+        </ol>
+</div>
+</fieldset>
+[% INCLUDE 'intranet-bottom.inc' %]

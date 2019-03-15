@@ -1,0 +1,12 @@
+$(document).ready(function() {
+    var pluginlist="<ul id=\"plugin\" class=\"nav navbar-nav\"><li class=\"dropdown\"><a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" title=\"[% tooltip %]\">[% menu %]<b class=\"caret\"></b></a><ul class=\"dropdown-menu\">";
+    [% FOREACH sp IN searchplugins %]
+        pluginlist+="<li id=\"[% sp.reftype %].xml\"><a href=\"#\">[% sp.reflabel %]</a></li>";
+    [% END %]
+    pluginlist+="</ul></li></ul>";
+    $("#toplevelmenu").after(pluginlist);
+    $('#plugin .dropdown-menu li').click(function(){
+        var url = "[% searchplug_webdir %]" + $(this).attr('id');
+        window.external.AddSearchProvider(url);
+    });
+});

@@ -1,0 +1,8 @@
+<SearchPlugin xmlns="http://www.mozilla.org/2006/browser/search/" xmlns:os="http://a9.com/-/spec/opensearch/1.1/">
+<ShortName>[% shortname %]</ShortName>
+<Description>[% shortname %] (Made through KOHA)</Description>
+<InputEncoding>UTF-8</InputEncoding>
+<Image width="16" height="16" type="image/x-icon">[% iconurl %]</Image>
+<Url type="text/html" method="GET" template="[% url %]{searchTerms}">
+</Url>
+</SearchPlugin>

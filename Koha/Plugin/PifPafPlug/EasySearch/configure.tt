@@ -1,0 +1,255 @@
+[% INCLUDE 'doc-head-open.inc' %]
+ <title>Koha: EasySearch Plugin: Configuration</title>
+[% INCLUDE 'doc-head-close.inc' %]
+<style type="text/css">
+.pluginlist {
+    width:95%;
+}
+.pluginlist th:last-child {
+    min-width:7%;
+}
+.pluginlist tr td:last-child {
+    padding-top: 0.4%;
+}
+.delrow {
+    padding: 0.4% 2%;
+}
+.pluginlist td{
+    padding:0.1%;
+}
+.pluginlist [type=text] {
+    box-sizing: border-box;
+    width:100%;
+}
+.alterserver {
+    width:25%;
+}
+.refquery {
+    width:33%;
+}
+.icon {
+    width:4%;
+}
+.icon input {
+    padding: 2px 12px;
+}
+fieldset.rows ol label {
+    width:30%;
+}
+div.ui-tabs-panel {
+    margin-left:4%;
+    margin-bottom:2%;
+}
+#icons {
+    margin-top:2%;
+    padding-bottom:1%;
+    display:none;
+}
+#icons label:first-child {
+    min-width:12%;
+}
+#newrow {
+    margin-left:30%;
+    position:relative;
+    bottom:10px;
+}
+.action [type=submit]{
+    margin-left:3%;
+    font-size:1.1em;
+}
+.left,.right {
+    margin: 1.5% 0 1.5% 1.5%;
+}
+.left {
+    float:left;
+    width:12%;
+}
+.right {
+    float:left;
+    margin-left:0;
+}
+.left li  {
+    border-left: 5px solid #ccc;
+    padding-left: 6px;
+    height:4px;
+}
+.right li {
+    height:4px;
+}
+div.submit {
+    clear:left;
+}
+div.menu {
+    float:left;
+}
+div.ajouter {
+    float:left;
+    margin-left:8%;
+}
+[name=remove] {
+    margin-left:1%;
+}
+fieldset.menu {
+    padding-top:10px;
+}
+</style>
+<script type="text/JavaScript" language="JavaScript">
+$(document).ready(function(){
+$('[name=kohaserver]').val(window.location.origin);
+$('#newrow').click(function() {
+    $('#icons').hide();
+    var lastid  = $('table tr').last().attr('id');
+    var newid = parseInt(lastid) +1;
+    var newrow = '<tr id="'+newid+'">';
+    ['reftype','reflabel','alterserver','refquery'].forEach(function(item){newrow += '<td><input name="'+item+'" value="" type="text" required="required" /></td>';});
+    newrow+='<td class="icon"><input id="favicon" title="Changer d\'icône" src="/plugin/Koha/Plugin/PifPafPlug/EasySearch/icons/favicon.ico" type="image" /><input type="hidden" name="iconurl" value="/plugin/Koha/Plugin/PifPafPlug/EasySearch/icons/favicon.ico"/></td><td><a href="#" class="delrow">Supprimer</a></td></tr>';
+    $('.pluginlist').append(newrow);
+    $('input[name="alterserver"]').prop('required',false);
+    return false;
+});
+$('.delrow').live('click',function() {
+      $('#icons').hide();
+      $(this).parent().parent().remove();
+      return false;
+});
+$('[type=image]').live('click',function() {
+    clicked =  $(this).prop('id');
+    $('#_'+clicked).prop('checked',true);
+    $('#icons').toggle();
+    return false;
+});
+$('[name=imgradio]').live('click',function() {
+     newclicked = $(this).prop('id').substring(1);
+     $('#'+clicked).prop('src',$(this).val()).prop('id',newclicked).next().val($(this).val());
+     $(this).parents('#icons').hide();
+     return false;
+});
+$('[name=saveconfig]').click(function() {
+    if ( $('[name=kohaserver]').val().match(/^https?:\/\/$/) ) {
+        alert("Veuillez compléter l'url du serveur Koha");
+        return false;
+    }
+});
+$('[name=savemenu]').click(function(){
+    if (! okconf()) return false;
+});
+function okconf () {
+    if ( $('[name=okconfig]').val() == 0 ){
+        alert("Vous devez d'abord enregistrer la configuration");
+        return false;
+    }
+return 1;
+}
+});
+</script>
+</head>
+<body>
+[% INCLUDE 'header.inc' %]
+[% INCLUDE 'cat-search.inc' %]
+
+<div id="breadcrumbs"><a href="/cgi-bin/koha/mainpage.pl">Home</a> &rsaquo; <a href="/cgi-bin/koha/plugins/plugins-home.pl">Plugins</a> &rsaquo; EasySearch &rsaquo; Configuration</div>
+
+<div id="doc3">
+    <h3>Configuration des plugins de recherche</h3>
+
+        <!-- Notice our form here has no 'action', this is good, it means that our forms will always get passed back to 'plugins/run.pl'. You could hard code it instead if you prefer -->
+    <form method="get">
+                <input type="hidden" name="class" value="[% CLASS %]"/>
+                <input type="hidden" name="method" value="[% METHOD %]"/>
+                <input name="kohaserver" type="hidden" value="" />
+    <fieldset class="rows"><legend>Configuration initiale ou mise à jour</legend>
+        <div class="left">
+            <ul>
+                <li>Type de recherche : </li>
+                <li>Nom à afficher : </li>
+                <li>URL serveur : </li>
+                <li>Querystring: </li>
+                <li>Icône : </li>
+            </ul>
+        </div>
+        <div class="right">
+            <ul>
+                <li>Terme unique sans espace et sans accent, descriptif de la cible visée par la recherche.</li>
+                <li>Libellé sous lequel le plugin apparaitra dans la barre de recherche du navigateur.</li>
+                <li>Adresse à préciser uniquement pour un site différent de Koha.</li>
+                <li>Chemin et chaine d'interrogation à concaténer à l'adresse du serveur.</li>
+                <li>Icône cliquable pour choisir une autre icône.</li>
+            </ul>
+        </div>
+        <ol>
+          <li><label class="splugins" style="text-align:left;margin-left:4%">SearchPlugins disponibles :</label><input type="button" id="newrow" value="Nouveau Plugin"/></li>
+        </ol>
+
+        <div class="ui-tabs-panel"  >
+        <table class="pluginlist">
+            <thead><tr><th>Type de recherche</th><th>Nom à afficher</th><th class=alterserver">URL serveur (autre que Koha)</th><th class="alterserver">QueryString</th><th class="icon">Icône</th><th class="sup"></th></tr></thead>
+            [% counter = 0 %]
+            [% FOREACH pl IN pluginloop %]
+            <tr id="[% counter %]">
+                <td><input name="reftype" value="[% pl.reftype %]" type="text"  required="required" /></td>
+                <td><input name="reflabel" value="[% pl.reflabel %]" type="text" required="required" /></td>
+                <td class="alterserver"><input name="alterserver" value="[% pl.alterserver %]" type="text" /></td>
+                <td class="refquery"><input name="refquery" value="[% pl.refquery %]" [% IF ( counter < 2 ) %]readonly[% END %] type="text" required="required" /></td>
+                <td class="icon"><input type="image" id="[% pl.imgid %]" title="Changer d'icône" src="[% pl.iconurl %]" />
+                <input type="hidden" name="iconurl" value="[% pl.iconurl %]"/></td>
+                <td>[% IF ( counter > 1 ) %]<a href="#" class="delrow">Supprimer</a>[% END %]</td>
+            </tr>
+            [% counter = counter + 1 %]
+            [% END %]
+        </table>
+        <div id="icons">
+            <label>Choisir une icône&nbsp;:</label>
+            [% FOREACH i IN icons %]
+            <label>
+            <img src="[% i.icon %]" />
+            <input id=[% i.iconid %] name="imgradio" value="[% i.icon %]" type="radio" />
+            </label>
+            [% END %]
+        </div>
+        </div>
+    <fieldset class="action">
+        <br/>
+        <input type="submit" name="saveconfig" value="Enregistrer la configuration" />
+    </fieldset>
+    </fieldset>
+
+    </form>
+
+    <form method="get">
+                <input type="hidden" name="class" value="[% CLASS %]"/>
+                <input type="hidden" name="method" value="[% METHOD %]"/>
+<fieldset class="rows menu"><legend>Ajout préalable d'un menu d'installation dans le bandeau supérieur de Koha</legend>
+
+<div class="ui-tabs-panel menu" >
+<ol>
+  <li>
+    <label for="menu" >Nom du menu</label>
+    <input name="menu" type="text" value="[% menu %]" />
+  </li>
+  <li>
+    <label for="tooltip" >Info-bulle</label>
+    <input name="tooltip" type="text" value="[% tooltip %]" />
+  </li>
+</ol>
+</div>
+<div class="ui-tabs-panel ajouter" >
+<table><thead><tr><th>Nom du plugin</th><th>Ajouter au menu</th></tr>
+[% FOREACH pl IN pluginloop %]
+    <tr>
+        <td><label>[% pl.reflabel %]</label></td>
+        <td><input name="checkedplug" type="checkbox" [% IF pl.checkedplug %]checked="checked"[% END %] /></td>
+    </tr>
+[% END %]
+</table>
+</div>
+
+<fieldset class="action">
+<input name="savemenu" type="submit" value="Installer le menu" />
+<input name="remove" type="submit" value="Retirer le menu" />
+<input name="okconfig" type="hidden" value="[% okconfig %]"/>
+</fieldset>
+</fieldset>
+</form>
+<div class="submit">
+</div>
+[% INCLUDE 'intranet-bottom.inc' %]
